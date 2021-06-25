@@ -1,23 +1,35 @@
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
 import './App.css';
+import {apiUrl} from './config';
+
+import axios from 'axios';
+import ImageGallery from 'react-image-gallery';
+
+const options = `${apiUrl}/acf/v3/options/options`;
 
 function App() {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    axios.get(options).then((res) => {
+      const gallery = res.data.acf.gallery;
+
+      for(let galleryImage of gallery) {
+        galleryImage.sizes = 'thumbnail';
+        galleryImage.original = galleryImage.url;
+        
+      }
+
+      setImages(gallery);
+    })
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        test rest api
       </header>
+      <ImageGallery items={images} />
     </div>
   );
 }
